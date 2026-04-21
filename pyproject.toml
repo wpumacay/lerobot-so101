@@ -1,0 +1,115 @@
+[project]
+name = "lerobot-so101"
+version = "0.0.1"
+description = "A small package with some utils for the lerobot so101 arm"
+readme = "README.md"
+authors = []
+requires-python = ">=3.11"
+dependencies = [
+    "tyro",
+    "scipy",
+    "msgspec",
+    "mujoco",
+    "tqdm",
+    "gymnasium",
+    "lerobot[feetech]",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.0"]
+build-backend = "uv_build"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pybind11-stubgen",
+    "ruff",
+    "ty",
+    "ipython",
+    "ipdb",
+]
+
+torch-cu12 = [
+    "torch>=2.7.0",
+]
+
+torch-cu13 = [
+    "torch>=2.10.0",
+]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = "torch-cu12" },
+        { extra = "torch-cu13" },
+    ],
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu128", extra = "torch-cu12" },
+    { index = "pytorch-cu130", extra = "torch-cu13" },
+]
+torchvision = { index = "torch" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://pypi.org/simple/torch"
+explicit = true
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = false
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # PEP8
+    "W",
+    # Pylint
+    "PL",
+]
+ignore = [
+    "C408", # dict() calls
+    "C901", # function complexity
+    "E501", # line too long (handled by line-length setting)
+    "B006", # defaults shouldn't be mutable
+    "UP015", # redundant mode arguments in open should be fine for now
+    "SIM117", # allow nested with statements for now
+    "SIM102", # don't be picky about nested if statements
+    "SIM114", # don't be picky about merging if branches using or
+    "PLR0912",
+    "PLR0913",
+    "E402",
+    "PLR0911",
+    "B905",
+]
+
+[tool.ty.environment]
+extra-paths = ["./typings"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
